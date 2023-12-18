@@ -21,3 +21,19 @@ fetch("http://localhost:3001/users", {
 
 
   }
+
+const url = 'http://localhost:3001';
+const options = {
+	method: 'POST',
+	body: {
+		testbody: "this is a test"
+	}
+};
+
+try {
+	const response = await fetch(url, options);
+	const result = await response.text();
+	console.log(result);
+} catch (error) {
+	console.error(error);
+}

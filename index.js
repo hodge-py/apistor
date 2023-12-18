@@ -51,28 +51,13 @@ app.listen(3001, () => {
   console.log('listening on port 3001');
 });
 
-app.post('/register', (req, res) => {
-  code = authcode(30);
-
-  connection.query('INSERT INTO users (username, password, auth) VALUES (?,?,?)', [req.query.username, req.query.password, code],(error, results) => {
-     if (error) return res.json({ error: error });
-
-     });
-
-  res.send({Oauth: code});
+app.post('/table', (req, res) => {
+  
 });
 
+app.post('/test', (req, res) => {
+    res.send(req.body.testbody);
 
 
+});
 
-function authcode(length){
-  let result = '';
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const charactersLength = characters.length;
-    let counter = 0;
-    while (counter < length) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-      counter += 1;
-    }
-    return result;
-}
