@@ -17,23 +17,28 @@ fetch("http://localhost:3001/users", {
 
 
   class Apistor {
-    
+    constructor(baseUrl,apiKey,apiHost){
+      this.baseUrl = baseUrl
+      this.apiKey = apiKey
+      this.apiHost = apiHost
+    }
 
 
   }
 
-const url = 'http://localhost:3001';
+const url = 'http://localhost:3001/test';
 const options = {
 	method: 'POST',
-	body: {
-		testbody: "this is a test"
-	}
+  headers: {
+    'Content-Type': 'application/json'
+  },
+	body: JSON.stringify({ testbody: "this is a test" })
 };
 
-try {
+async function tester(){
 	const response = await fetch(url, options);
 	const result = await response.text();
-	console.log(result);
-} catch (error) {
-	console.error(error);
+  console.log(result)
 }
+
+tester()

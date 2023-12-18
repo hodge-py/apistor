@@ -52,11 +52,13 @@ app.listen(3001, () => {
 });
 
 app.post('/table', (req, res) => {
+
   
 });
 
 app.post('/test', (req, res) => {
-    res.send(req.body.testbody);
+    console.log(req.body.testbody);
+    res.send(req.body);
 
 
 });
