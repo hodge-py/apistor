@@ -5,9 +5,10 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const app = express();
 const mysql = require('mysql2');
+var session = require('express-session');
 
-// defining the Express app
-
+var connection;
+/*
 const connection = mysql.createConnection({
   host: 'mysql-284bd9f9-khodge1-9a96.a.aivencloud.com',
   user: 'avnadmin',
@@ -23,7 +24,9 @@ connection.query(
     console.log(fields); // fields contains extra meta data about results, if available
   }
 );
+*/
 
+app.use(session({secret:'XASDASDAasasvqegqegZ', resave: false, saveUninitialized: true}));
 // defining an array to work as the database (temporary solution)
 const ads = [
   {title: 'Hello, world (again)!'}
@@ -51,6 +54,42 @@ app.listen(3001, () => {
   console.log('listening on port 3001');
 });
 
+app.post('/add-database', (req, res) => {
+  
+  
+
+});
+
+app.post('/database-connect', (req, res) => {
+  connection = databaseConnect(req.body.host,req.body.user,req.body.password,req.body.database,req.body.port);
+  console.log(req.body.user)
+
+  connection.query(
+    'SELECT * FROM `users`',
+    function(err, results, fields) {
+      console.log(results); // results contains rows returned by server
+      console.log(fields); // fields contains extra meta data about results, if available
+      res.send(JSON.stringify(results));
+    }
+  );
+  
+
+});
+
+app.post('/query', (req, res) => {
+  
+  connection.query(
+    'SELECT * FROM `users`',
+    function(err, results, fields) {
+      console.log(results); // results contains rows returned by server
+      console.log(fields); // fields contains extra meta data about results, if available
+      res.send(JSON.stringify(results));
+    }
+  );
+
+  
+});
+
 app.post('/table', (req, res) => {
 
   
@@ -60,6 +99,19 @@ app.post('/test', (req, res) => {
     console.log(req.body.testbody);
     res.send(req.body);
 
-
 });
 
+
+
+
+
+
+function databaseConnect(host,user,password,database,port) {
+  return mysql.createConnection({
+    host: host,
+    user: user,
+    password: password,
+    database: database,
+    port: port,
+  });
+};

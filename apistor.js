@@ -17,28 +17,38 @@ fetch("http://localhost:3001/users", {
 
 
   class Apistor {
-    constructor(baseUrl,apiKey,apiHost){
-      this.baseUrl = baseUrl
-      this.apiKey = apiKey
-      this.apiHost = apiHost
+    constructor(){
+      this.connection;
+    }
+
+    databaseConnect(host,user,password,database,port){
+      return mysql.createConnection({
+        host: host,
+        user: user,
+        password: password,
+        database: database,
+        port: port,
+      });
+    }
+
+    query(query){
+      connection.query(
+        'SELECT * FROM `users`',
+        function(err, results, fields) {
+          console.log(results); // results contains rows returned by server
+          console.log(fields); // fields contains extra meta data about results, if available
+        }
+      );
     }
 
 
   }
 
-const url = 'http://localhost:3001/test';
-const options = {
-	method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-	body: JSON.stringify({ testbody: "this is a test" })
-};
 
-async function tester(){
-	const response = await fetch(url, options);
-	const result = await response.text();
-  console.log(result)
-}
-
-tester()
+  console.log(JSON.stringify({
+    host: "mysql-284bd9f9-khodge1-9a96.a.aivencloud.com",
+    user: 'avnadmin',
+    password: 'AVNS_uj8SPMvMDIqb7M7_NqU',
+    database: 'defaultdb',
+    port: 17203,
+  }))
