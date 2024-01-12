@@ -6,8 +6,9 @@ const morgan = require('morgan');
 const app = express();
 const mysql = require('mysql2');
 var session = require('express-session');
-
+var port = process.env.PORT || 3001;
 var connection;
+
 
 const con = mysql.createConnection({
   host: 'mysql-284bd9f9-khodge1-9a96.a.aivencloud.com',
@@ -26,7 +27,7 @@ con.query(
 );
 
 
-app.use(session({secret:'XASDASDAasasvqegqegZ', resave: false, saveUninitialized: true}));
+app.use(session({secret:'XASDASDAasasvqegqegZ', resave: true, saveUninitialized: true}));
 // defining an array to work as the database (temporary solution)
 const ads = [
   {title: 'Hello, world (again)!'}
@@ -38,6 +39,8 @@ app.use(helmet());
 // using bodyParser to parse JSON bodies into JS objects
 app.use(bodyParser.json());
 
+app.use(bodyParser.urlencoded({ extended: true }));
+
 // enabling CORS for all requests
 app.use(cors());
 
@@ -47,12 +50,15 @@ app.use(morgan('combined'));
 // defining an endpoint to return all ads
 app.get('/', (req, res) => {
   res.send(ads);
+  req.session.logIn = false;
 });
 
 // starting the server
-app.listen(3001, () => {
+app.listen(port, (req,res) => {
   console.log('listening on port 3001');
 });
+
+
 
 app.post('/add-database', (req, res) => {
   rand_var = makeid(30);
@@ -113,11 +119,6 @@ app.post('/query', (req, res) => {
 
 });
 
-
-
-
-
-
 function makeid(length) {
   let result = '';
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -129,3 +130,30 @@ function makeid(length) {
   }
   return result;
 }
+
+
+
+app.post('/login-try', (req, res) => {
+  console.log(req.body)
+  
+  con.query('SELECT email, password FROM peerair_users WHERE email = ? and password = ?', [req.body.username,req.body.password],(error, results) => {
+     if (error) { 
+     return res.json({ error: error });
+     }
+     
+     if(results){
+      console.log(results[0].email)
+      req.session.logIn = true;
+      console.log(req.session)
+      return res.send(JSON.stringify({valid: true, email: results[0].email}))
+     }
+
+    });
+
+});
+
+
+app.post('/check-login', (req, res) => {
+    console.log(req.session)
+    res.send(JSON.stringify({login_check: `${req.session.logIn}`}))
+});
